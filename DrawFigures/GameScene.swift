@@ -132,8 +132,49 @@ class GameScene: SKScene
         }
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        let touch = touches.first
+        let location = touch!.location(in: self)
+        let node = self.atPoint(location)
+        
+        if node == nodeBg
+        {
+            if(rawPoints[rawPoints.count-2] != Int(location.x) && rawPoints[rawPoints.count-1] != Int(location.y))
+            {
+                rawPoints.append(Int(location.x))
+                rawPoints.append(Int(location.y))
+            }
+            draw()
+        }
+        
+        
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        let touch = touches.first
+        let location = touch!.location(in: self)
+        let node = self.atPoint(location)
+        
+        if node == nodeBg
+        {
+            if rawPoints.count > 0
+            {
+                positions.append(rawPoints)
+            }
+        }
+        
+        if node == btnReset
+        {
+            resetAll()
+        }
+    }
+
+    
     func printPoints()
     {
+        var allPisitions = [[Int]]()
         for position in positions
         {
             var newPoints = [Int:[Int]]()
@@ -180,8 +221,12 @@ class GameScene: SKScene
                 
                 newPos.append(position[i])
             }
+            print("-----  NEW POS -----")
             print(newPos)
+            allPisitions.append(newPos)
         }
+        print("-----  ALL POS -----")
+        print(allPisitions)
     }
     
     func getPoints(slope:CGFloat, distance: CGFloat, angle:CGFloat, position:[Int], currentPosition:Int) -> [Int]
@@ -289,45 +334,7 @@ class GameScene: SKScene
         return dY/dX
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
-    {
-        let touch = touches.first
-        let location = touch!.location(in: self)
-        let node = self.atPoint(location)
-        
-        if node == nodeBg
-        {
-            if(rawPoints[rawPoints.count-2] != Int(location.x) && rawPoints[rawPoints.count-1] != Int(location.y))
-            {
-                rawPoints.append(Int(location.x))
-                rawPoints.append(Int(location.y))
-            }
-            draw()
-        }
-        
-        
-    }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
-    {
-        let touch = touches.first
-        let location = touch!.location(in: self)
-        let node = self.atPoint(location)
-        
-        if node == nodeBg
-        {
-            if rawPoints.count > 0
-            {
-                positions.append(rawPoints)
-            }
-        }
-        
-        if node == btnReset
-        {
-            resetAll()
-        }
-    }
-
     func draw()
     {
         let context = UIBezierPath()
